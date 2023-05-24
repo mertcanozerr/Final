@@ -53,7 +53,7 @@ Myanmar'da 2019 yılında 3 büyük şehirde gerçekleştirilmiş olan market al
 
 Literatür taraması sonucunda müşteri memnuniyetini etkileyen çeşitli faktörlerin ele alındığı çalışmalara çokça rastlanılmasına karşın; konu Myanmar özeline geldiğinde çalışmaların sıklığı fazlasıyla seyreliyor. Çalışma kapsamında çeşitli dergilerden , makalelerden ve raporlardan yararlanılmıştır.
 
-(@appiah1998customer) ve (@brady2001customer) çalışmalarında müşteri odaklı politikaların pozitif yanlarını ele almıştır. (@eskiler2015algilanan) ise müşterilerin satın alma eğilimlerinin müşteri memnuniyetiyle olan ilişkisini açıklamıştır.
+(@appiah1998customer) ve çalışmalarında müşteri odaklı politikaların pozitif yanlarını ele almıştır.ise müşterilerin satın alma eğilimlerinin müşteri memnuniyetiyle olan ilişkisini açıklamıştır.
 
 # Veri 
 Bu çalışmada 2019 yılını kapsayan zaman diliminden oluşan bir veri kullanılmıştır. Bu veri seti Kaggle adlı sitede Aung Pyae isimli kullanıcının oluşturduğu bir veri setidir. Veri seti, Myanmar’ın (Burma) en büyük üç kentindeki alışveriş gerçekleştirmiş müşterilerin verilerini sağlar. Marketlerin maliyetleri ve brüt karlarına da yer verilmiştir. Ayrıca veri setinde alışverişi yapan kişilerin cinsiyeti, market üyelikleri ve ödeme yöntemlerine dair bilgilere de yer verilmektedir. Toplamda 1000 gözlemden oluşmuştur. Kullanılan veri seti üzerinde herhangi bir değişiklik yapılmayıp ham veri seti üzerinden analiz yapılmıştır.

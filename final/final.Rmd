@@ -1,0 +1,165 @@
+---
+title: "Myanmar'daki Süpermarket Müşterilerinin Puanlamaları Üzerine Tahmin"
+author: 
+  - Mert Can Özer[^1]
+bibliography: ../bibliography/biblio.bib
+csl: ../csl/apa-tr.csl
+header-includes:
+  - \usepackage{polyglossia}
+  - \setmainlanguage{turkish}
+  - \usepackage{booktabs}
+  - \usepackage{caption} 
+  - \captionsetup[table]{skip=10pt}
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 4
+    keep_tex: no
+    latex_engine: xelatex
+    number_sections: yes
+    toc: no
+geometry: margin=1in
+link-citations: yes
+urlcolor: blue
+fontsize: 12pt
+biblio-style: apalike
+abstract: |
+   Tüketim toplumu olarak isimlendirdiğimiz günümüz toplumunda, süpermarketler kentlerin vazgeçilmez bir ihtiyacı konumundadır. Alışveriş, kimisi için sadece bir ihtiyaçtan ötesi değilken kimisi için ise -kabul etmese bile- bir bağımlılık haline gelmiş durumda. Modern çağın getirdiği gereksinimler ile beraber bu işin rekabeti de kızışmaktadır. Myanmar’da süpermarketlerde hizmet kalitesini arttırmak üzere insanların memnuniyetlerini ve bununla beraber memnuniyetlerini etkileyen faktörlerin baz alındığı araştırmalar yapılmıştır. Bu çalışmada müşterilerin memnuniyet oranları ANOVA modeli ile tahmin edilmesi hedeflenmiştir. Bu doğrultuda kaggle.com adlı siteden Aung Pyae adlı kullanıcının 2019’ dair oluşturduğu veri seti kullanılmıştır. Veri seti üzerinde herhangi bir değişiklik yapılma ihtiyacı duyulmamış, ham veri seti kullanılmıştır. Veri setinin Myanmar’daki en büyük üç şehirdeki alışverişleri kapsadığı göz önünde bulundurularak Tek Yönlü ANOVA analizi kullanılarak tahmin yapılması hedeflenmiştir. Uygulanan varyans analizi sonucunda genel olarak müşteri memnuniyetlerinin yükselmeye eğimli olduğu, özellikle nüfusa bağlı olarak görece düşük nüfus barındıran bölgelerde uygulanabilecek mikro ve makro politikalarla memnuniyet oranlarının yükselmesi öngörülmüştür.
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE, echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+<!-- ======================================================================= -->
+<!-- ============================== NOTLAR ================================= -->
+<!-- ======================================================================= -->
+[^1]: 19080238, [Github Repo](https://github.com/mertcanozerr)
+
+# Giriş
+Myanmar Birliği Cumhuriyeti veya diğer bilinen adlarıyla Myanmar, Burma, Birmanya Güneydoğu Asya’da bir ülkedir. 55 milyona yakın nüfusu ile Güneydoğu Asya anakarasındaki en büyük ülke olan Myanmar, 1 milyonu aşkın 3, toplamda 78 şehre sahiptir.Kökeni 9.yüzyıla kadar dayanan bu ülke gerek konumu gerekse üzerinde uzun yıllar boyunca uygulanan stratejiler sayesinde birçok alanda kendi adından bahsettirmiştir.
+
+2.Dünya Savaşı sonuna kadar İngiliz sömürgesi olarak Birmanya adıyla tarih sahnesinde yer alan Myanmar 1948’de Sömürgeden çıkarak pek çok alanda olduğu gibi ekonomik özgürlüğünü de kazanmış oldu.İç karışıklıkların çok sık olduğu ülkede gerçekleşen çalkantılar günümüzde bile halen bir ekonomik istikrar yakalayamamasının en büyük sebeplerinden birisidir.
+
+Myanmar, etnik çeşitliliği yüksek olan bir bölge olması sebebiyle her alanda yönelimlerin de çeşitlilik kazanması durumu söz konusudur. Bu çalışmada Myanmar’ın en büyük 3 şehri olan Naypyitaw (Nepido), Mandalay ve Yangon’da bulunan alışveriş merkezleri ve buradaki müşterilerin değerlendirmeleri üzerine hazırlanmış veri seti üzerine çalışılmıştır. Bahsi geçen 3 şehirdeki müşteriler, 2019 yılında çeşitli değişkenler ışığında incelenerek ortaya 1000 gözlem konulmuştur.  
+
+
+Proje ödevinizde yer alan başlıkların bu metinde yer alan başlıkları kesinlikle içermesi gerekmektedir. Burada kullanılan başlıklar haricinde farklı alt başlıklar da kullanabilirsiniz. Projenizi yazarken bu dosyayı taslak olarak kullanıp içeriğini projenize uyarlayınız.
+
+## Çalışmanın Amacı
+Myanmar'da 2019 yılında 3 büyük şehirde gerçekleştirilmiş olan market alışverişleri ve müşteri puanlamaları incelenerek 2020-2021 yılları puanlamaları öngörülecektir. Bu çalışmadan elde edilen bulguların, Myanmar'daki müşterilerin eğilimlerine göre süpermarketlerin satış politikalarına yardımcı olacağı düşünülmektedir. Ek olarak nüfusa ve bulunan coğrafi konumlara göre göz önünde bulundurulabilecek bilgilere de yer verilecektir.
+
+## Literatür 
+
+Literatür taraması sonucunda müşteri memnuniyetini etkileyen çeşitli faktörlerin ele alındığı çalışmalara çokça rastlanılmasına karşın; konu Myanmar özeline geldiğinde çalışmaların sıklığı fazlasıyla seyreliyor. Çalışma kapsamında çeşitli dergilerden , makalelerden ve raporlardan yararlanılmıştır.
+
+(@appiah1998customer) ve (@brady2001customer) çalışmalarında müşteri odaklı politikaların pozitif yanlarını ele almıştır. (@eskiler2015algilanan) ise müşterilerin satın alma eğilimlerinin müşteri memnuniyetiyle olan ilişkisini açıklamıştır.
+
+# Veri 
+Bu çalışmada 2019 yılını kapsayan zaman diliminden oluşan bir veri kullanılmıştır. Bu veri seti Kaggle adlı sitede Aung Pyae isimli kullanıcının oluşturduğu bir veri setidir. Veri seti, Myanmar’ın (Burma) en büyük üç kentindeki alışveriş gerçekleştirmiş müşterilerin verilerini sağlar. Marketlerin maliyetleri ve brüt karlarına da yer verilmiştir. Ayrıca veri setinde alışverişi yapan kişilerin cinsiyeti, market üyelikleri ve ödeme yöntemlerine dair bilgilere de yer verilmektedir. Toplamda 1000 gözlemden oluşmuştur. Kullanılan veri seti üzerinde herhangi bir değişiklik yapılmayıp ham veri seti üzerinden analiz yapılmıştır.
+```{r include=FALSE}
+library(tidyverse)
+supermarket <- read_csv("./data/supermarket.csv")
+```
+
+
+```{r ,echo=FALSE, paged.print=TRUE, results='asis'}
+library(xtable)
+library(summarytools)
+st_options(lang = "en")
+
+supermarket %>%
+select("Quantity", "Unit price", "gross income", "Total", "Rating") %>%
+descr(stats = c("mean", "sd", "min", "med", "max"), transpose = TRUE) %>%
+xtable(caption = "Özet İstatistikler",
+label = "tab:ozet",
+align = c("l", "c", "c", "c", "c", "c")) %>%
+print(booktabs = TRUE, comment = FALSE, caption.placement = "bottom")
+```
+
+Tablo \ref{tab:ozet}, süpermarket satışlarının, Myanmar için 2019 yılındaki adet bazında satışın, adet fiyatının, marketin brüt karının, toplam alışveriş tutarının, müşterilerin alışveriş puanlamalarının; ortalama değerlerini, minimum, medyan ile maksimum değerlerini ve standart sapmalarını göstermektedir.
+
+Tablo \ref{tab:ozet} ‘de görüldüğü üzere -asgari ücretin yaklaşık 150.000 Myanmar Kyatı (@nmwcm) olduğu göz önüne alındığında- ortalama alışveriş tutarlarının makul seviyeler olduğu gözlemlenmiştir. Alışverişlerden alınan vergiler ve maliyetlerden sonra marketlere müşteri başına düşen kar, asgari ücret göz önünde bulundurulduğunda oldukça az olduğu gözlemlenmiştir. Myanmar'daki müşterilerin genel olarak yaptıkları alışverişlerden memnun kaldıklarını söyleyebiliriz. Bu noktada müşteri puanlamalarının şehirlere göre dağılımını görmek daha çok fikir verecektir (Şekil \@ref(fig:boxplot)).
+
+```{r boxplot, fig.align='center', fig.cap='Üç Büyük Şehirdeki Müşteri Puanlamaları', echo=FALSE}
+library(ggplot2)
+ggplot(supermarket, 
+       aes(x=as.factor (City), y=Rating)) + 
+       geom_boxplot(fill="darkgreen", alpha=0.2) + 
+       xlab("City")
+```
+
+Şekil \@ref(fig:boxplot)’de gözlemlenen üç büyük şehirde alışveriş gerçekleştiren müşterilerin puanlamalarının kutu grafiği verilmiştir. Başkent olan Naypyitaw ve en büyük Myanmar’ın en büyük şehri olan Yangon’da müşteri memnuniyetinin Mandalay’a kıyasla daha iyi seviyede olduğu anlaşılmaktadır. Müşterilerin alışveriş sonunda yaptıkları toplam harcamanın memnuniyet oranlarında yaptığı değişimi irdeleyebilmek adına Şekil \@ref(fig:scatterplot)’ye göz atmakta yarar vardır.
+
+```{r scatterplot, fig.align='center', fig.cap='Toplam Harcamanın Memnuniyet Üzerindeki Etkisi', echo=FALSE}
+library(ggplot2)
+ggplot(supermarket, aes(x=Total, y=Rating, color=City)) +
+    geom_point() +
+    theme(legend.position="none")
+```
+
+Şekil \@ref(fig:scatterplot)’de görüldüğü üzere toplam harcamaların maksimuma ulaştığı noktalara geldikçe Mandalay şehrindeki müşteri puan sayıları da düşüş göstermektedir. Büyük harcama yapan Mandalay sakinlerinin ise düşük puan vermeye daha çok yatkın olduğu gözlemlenmiştir. Şekil \@ref(fig:scatterplot) göz önüne alındığında (Kırmızı renk Mandalay’ı, Yeşil renk Naypyitaw’u, Mavi renk Yangon’u temsil etmektedir.) memnuniyet puanlarının harcanan para miktarına göre yaptığı değişiklik, şehirlerde ikamet eden insanların maddi durumlarıyla bağlantılı olduğu fikrini akla getirmektedir. Ayrıca ekonomik özgürlüğü elinde bulunduran toplumların mutluluk ve refahları doğru orantılı bir şekilde artmaktadır (@Altınışık). Marketlerdeki değişik ürün çeşitlerinin de satın alma eğilimlerine olan etkisi oldukça fazla olduğu için bu konuyla ilişkili inceleme yapmak için Şekil \@ref(fig:ridgeline)’te verilen grafiği inceleyelim.
+
+```{r ridgeline, fig.align='center', fig.cap='Cinsiyetlere Göre Satın Alınan Ürün Çeşitliliği', echo=FALSE}
+library(ggridges)
+library(ggplot2)
+ggplot(supermarket, aes(x = Total, y = Productline, fill = Gender)) +
+    geom_density_ridges() +
+    theme_ridges() + 
+    theme(legend.position = "none")
+```
+
+Şekil \@ref(fig:ridgeline)’e baktığımızda erkeklerin az miktar ödeyerek çok alışveriş yaptığını gözlemlerken kadınlarda durumun çok daha komplike olduğunu gözlemliyoruz. Özellikle yiyecek ve içecek, ev eşyaları ve giyim üzerine toplam tutar fark etmeksizin fazla alışveriş eğiliminde olduğu anlaşılmaktadır. Neredeyse her ürün çeşidinde toplam tutarda 500 bandını geçmeyecek şekilde alışverişe özen gösteren erkeklere nazaran kadınlar, toplam harcamada 500 bandını geçmeye yönelik alışverişler yapmıştır. Bu demektir ki Şekil \@ref(fig:scatterplot)’de gözlemlenen toplam harcamanın artmasıyla beraber düşen memnuniyetin çoğunluk oylarını kadın müşterilerin oluşturduğu yönündedir.
+
+# Yöntem ve Veri Analizi
+Bu çalışmada Myanmar’ın üç büyük şehrindeki süpermarket müşterilerinin memnuniyet puanları Tek Yönlü ANOVA (One-Way Analysis of Variance) yöntemi ile tahmin edilmiştir.
+
+Varyans analizi, ANOVA, ortalamadan sapmalara dayalı olarak örneklemler arasında ortalamaları karşılaştırma yöntemidir. ANOVA modeli, doğrusal modelin sadece özel bir şeklidir. Varyans analizi, üç ya da daha fazla grup ortalaması arasında istatistiksel olarak farklılık olup olmadığını test etmek amacıyla kullanılan bir yöntemdir. Grup ortalamalarının karşılaştırılması, deneyin sonunda bağımlı değişkende meydana gelen değişkenliğin ne kadarının faktörden/faktörlerden, ne kadarının hatadan, vb. kaynaklandığının belirlenmesi, bir başka deyişle toplam varyansın bileşenlerine ayrılması yardımıyla yapılır (Şenoğlu).
+
+Varyans analizinin uygulanabilmesi için örneklem ana kütlesinin sahip olması gereken bazı özellikler bulunmaktadır. Her bir grubun normal dağılım sergilemesi, örneklerin bağımsız ve varyanslarının eşit olması istenmektedir. ANOVA analizinde kullanılan F testi hipotezi şöyle oluşturulur (Ervural):
+
+$$
+H_0 : \mu_0 = \mu_2 = \mu_3 = … = \mu_N
+$$
+
+Bu denklem bize ortalamalar arasında fark olmadığını göstermektedir. $H_1$ ise en az iki ortalama arasında fark olduğunu gösterir. Sonrasında test istatistiği gereklidir. Varyans analizinde temel amaç, ikiden fazla örnek için örnek ortalamalarının genel ortalamadan sapmalarının kareler toplamını, sapmaya yol açan etkileri ayırmak ve analiz etmektir. İki faktörlü varyans analizi modeli şu şekilde gösterilmektedir:
+
+
+$$
+X_{ijk} = \mu + \alpha_{i} + \beta_{j} + \alpha \beta_{ij} + \epsilon_{ijk}
+$$
+Burada $\mu$, genel ortalamayı; $\alpha_{i}$ ilk faktör etkisini; $\beta_{j}$ ikinci faktörün etkisini ve $\alpha \beta_{ij}$ ortak etkiyi ifade ederken, $\epsilon_{ijk}$ hata terimini açıklamaktadır {Ervural}. 
+
+Tek yönlü varyans analizini yaptığımızda anlamlı olmayan bir p değeri elde ederiz (0,05’ten büyük). 
+```{r aov, echo=FALSE}
+supermarket.aov <- aov(Rating ~ City, data = supermarket) 
+oneway.test(Rating ~ City, data = supermarket, var.equal = TRUE)
+```
+
+Analizi ilerlettiğimiz zaman F değerini elde ederiz. F değeri İki ya da daha fazla örneklem ortalamasının farklı $\mu$’leri temsil edip etmediğini belirlemek için tüm örneklem ortalamalarının aynı anda karşılaştırılmasını sağlar. Hesaplanan F değeri, belli alfa düzeyi ve serbestlik derecesine göre belirlenen kritik değer (tablo değeri) ile karşılaştırılarak karar verilir. Hesaplanan F değeri manidar değilse, örneklem ortalamalarından herhangi ikisi arasında manidar farklılık olmadığını ve tüm ortalamaların aynı $\mu$’yü temsil ettiğini gösterir. Hesaplanan F değeri, manidar ise ortalamalar arasında en az bir farkın manidar olduğunu, yani en az iki ortalamanın farklı $\mu$’leri temsil ettiğini gösterir. Bu durumda, bu farkın hangi ortalamalar arasında olduğunu anlamak için ikili karşılaştırmalar yapılır (çoklu karşılaştırma testleri (post hoc test)) (@Tavşancıl).
+
+```{r summ, echo=FALSE}
+summary(supermarket.aov)
+```
+
+Analiz, her ne kadar grupların ortalamalarının farklı olup olmadığını söylese de hangi grupların farklı olduğunu belirlemez ve farklılıklarını bildirmez. Bu farklılıkları ayırt edebilmek için Tukey analizi farklılıkları hesaplayabilir (@Bülbül).
+
+```{r , echo=FALSE}
+TukeyHSD(supermarket.aov)
+```
+
+Çıktıdaki her satır, grubun ortalamaları arasındaki farkı (diff) ve fark için güven aralığının alt ve üst (lwr ve upr) sınırlarını içerir.
+
+# Sonuç
+Alışveriş, insan hayatında inkar edilemeyecek kadar büyük bir yer tutuyor. Hiç şüphe yok ki her toplumda olduğu gibi Myanmar’da da farklı çeşit ürün kategorilerinden çok sayıda alışveriş meydana gelmektedir. İnsanlar bu eylemi, ihtiyaç duyma hissiyatıyla beraber tutarlı ya da tutarsız sayısı takip edilemeyecek kadar sık gerçekleştiriyor. Myanmar, ülke olarak tarih boyunca çok hareketli hayat yaşamış bir toplum olarak alışveriş konusunda da o aksiyonu hissettiriyor. Ne yazık ki ülke ekonomik anlamda oldukça yetersiz bir durumda olduğu için bu eylem bazı kişiler için fazlasıyla sancılı geçiyor.
+
+Bu çalışmada Myanmar’daki (Burma) en büyük üç şehir olan Yangon,  Mandalay ve Naypyitaw sakinlerinin 2019 yılı boyunca yaptıkları alışveriş sonucunda verdikleri puanları tahmin eden en uygun ANOVA modelinin ortaya konması hedeflenmiştir. Bu doğrultuda Aung Pyae adlı Kaggle kullanıcısının yayınladığı 2019 verileri kullanılmıştır. 3 adet grup olması Tek Yönlü ANOVA modelinin kullanılmasında karar kılınma sebebi olmuştur. Analizde bu üç grup, ikişerli gruplar halinde kıyaslanarak aralarındaki değerler karşılaştırılmıştır. Aralarındaki farkı detaylandırmak için Tukey analizinden yardım alınmıştır.
+
+Myanmar, bu yüksek enflasyonlu devamlı kriz halinde tanımlanabilecek ekonomik durumlarıyla hiç şüphe yoktur ki alışveriş ihtiyaçlarını bir şekilde karşılayacaklardır. Her geçen sene dünya sahnesinde enteresan adımlar atarak adından söz ettiren Myanmar, ilerleyen senelerde başkenti Naypyitaw ve en büyük şehri Yangon’da ekonomik zorluklara rağmen müşteri memnuniyetleri 7/10 ve üstü ortalamayla tamamlaması öngörülürken bir diğer en büyük şehri olan Mandalay’da bu ortalama ne yazık ki 7 altında tahmin edilmiştir. Bu durum Yangon ve Naypyitaw’a bakıldığında ülke için olumlu bir durum gibi gözükürken, şehir nüfusları azaldıkça olumsuz bir hale bürünmektedir.
+
+\newpage
+# Kaynakça {#references}
+<div id="refs"></div>
+
+
+
